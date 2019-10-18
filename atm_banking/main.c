@@ -10,6 +10,6 @@
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    printf("Hello, from the other side.");
+    printf("Hello, from the other side. \n hello");
     return 0;
 }
