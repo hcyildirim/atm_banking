@@ -11,29 +11,31 @@
 
 int main(int argc, const char * argv[]){
     char option, loweredOption;
-
-    printf("Insert your card (y/n): ");
-    scanf("%c", &option);
     
-    loweredOption = tolower(option);
+    do {
+        printf("Insert your card (y/n): \n");
         
-    switch (loweredOption)
-    {
-        case 'y':
-            // TODO: buraya menu gelcek @huso
-            break;
-             
-        case 'n':
-            // TODO: programdan çıkıcak. @huso
-            break;
-    
-        default:
-            printf("wrong character");
-            break;
-    }
-    
-  
-    
+        do {
+            scanf("%c", &option);
+        } while( option == '\n' );
+        
+        loweredOption = tolower(option);
+        
+        switch (loweredOption)
+        {
+            case 'y':
+                // TODO: buraya menu gelcek @huso
+                break;
+                 
+            case 'n':
+                // TODO: programdan çıkıcak. @huso
+                break;
+        
+            default:
+                printf("wrong character");
+                break;
+        }
+    } while (option != 'n');
     
     /*
         authenticate olabilmek icin 1 fonksiyon'a ihtiyacımız var, 1 numaralı menu o işe yarıyor
