@@ -12,9 +12,16 @@ int main(int argc, const char * argv[]) {
     /*
         authenticate olabilmek icin 1 fonksiyon'a ihtiyacımız var, 1 numaralı menu o işe yarıyor
      
-        1- Insert your card
+        Insert your card (Y/N)
         
-        bu menu seçilince kullanıcıya müşteri numarası sorulur ve şifresi sorulur.
+        Kullanıcıya iki seçenek gösterilir. Yes/No (Y/N)
+            + Yes derse;
+                + Kullanıcıya müşteri numarası sorulur ve şifresi sorulur.
+                    + Doğru giriş yaparsa diğer menü gösterilir.
+                    + Yanlış giriş yaparsa, bankamatik içerisine ne kadar yanlış giriş yaptığı sayısı log olarak yazılır.
+                        + 3 kere yanlış giriş yaparsa, kartı bloke olur.
+            + No derse;
+                + Program kapanır.
      
         oluşturulcak method
      
