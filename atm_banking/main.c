@@ -11,6 +11,36 @@
 #include <ctype.h>
 #include <stdbool.h>
 
+void showOperationsMenu() {
+    int selection;
+    
+    do {
+        
+        printf("1- Account information\n");
+        printf("2- Transactions\n");
+        printf("3- Deposit\n");
+        printf("4- Pin change\n");
+        printf("5- Balance\n");
+        printf("6- Withdrawal\n");
+        printf("7- Bill payment\n");
+        
+        printf("Select an operation: ");
+        scanf("%i", &selection);
+        
+        switch (selection)
+               {
+                   case 1:
+                       printf("1 selected. \n");
+                       break;
+               
+                   default:
+                       printf("only use numbers between 1 and 7. \n");
+                       break;
+               }
+        
+    } while( selection >= 1 && selection <= 7 );
+}
+
 int main(int argc, const char * argv[]){
     char option, loweredOption;
     bool cardInserted = false;
@@ -28,7 +58,8 @@ int main(int argc, const char * argv[]){
         {
             case 'y':
                 cardInserted = true;
-                // TODO: buraya menu gelcek @huso
+                system("clear");
+                showOperationsMenu();
                 break;
                  
             case 'n':
