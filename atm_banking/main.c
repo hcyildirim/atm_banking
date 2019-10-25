@@ -25,7 +25,9 @@ void showOperationsMenu() {
         printf("7- Bill payment\n");
         
         printf("Select an operation: ");
-        scanf("%i", &selection);
+        do {
+            scanf("%i", &selection);
+        } while( selection == '\n' );
         
         switch (selection)
                {
@@ -37,8 +39,7 @@ void showOperationsMenu() {
                        printf("only use numbers between 1 and 7. \n");
                        break;
                }
-        
-    } while( selection >= 1 && selection <= 7 );
+    } while(selection >= 1 && selection <= 7);
 }
 
 int main(int argc, const char * argv[]){
