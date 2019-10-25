@@ -66,7 +66,31 @@ void showOperationsMenu() {
     } while(selection >= 1 && selection <= 7);
 }
 
+void upsertDataFiles() {
+    int numberOfFiles = 2;
+    const char *files[numberOfFiles];
+    files[0] = "users.txt";
+    files[1] = "accounts.txt";
+    
+    for (int i = 0; i < numberOfFiles; i++) {
+        FILE *file;
+        if((file = fopen(files[i], "r")) != NULL)
+        {
+            // file exists, nothing to do here
+            fclose(file);
+        }
+        else
+        {
+            // file not found, so create one
+            file = fopen(files[i], "w");
+            fclose(file);
+        }
+    }
+}
+
 int main(int argc, const char * argv[]){
+    upsertDataFiles();
+    
     char option, loweredOption;
     bool cardInserted = false;
     
