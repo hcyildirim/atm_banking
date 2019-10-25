@@ -71,7 +71,7 @@ int main(int argc, const char * argv[]){
                 break;
         }
     } while (cardInserted != true);
-    
+             
     /*
         authenticate olabilmek icin 1 fonksiyon'a ihtiyacımız var, 1 numaralı menu o işe yarıyor
      
