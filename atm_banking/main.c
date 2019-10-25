@@ -32,8 +32,32 @@ void showOperationsMenu() {
                    case 1:
                        printf("1 selected. \n");
                        break;
-               
-                   default:
+                       
+                   case 2:
+                       printf("2 selected. \n");
+                       break;
+                       
+                  case 3:
+                       printf("3 selected. \n");
+                       break;
+                       
+                    case 4:
+                       printf("4 selected. \n");
+                       break;
+                       
+                    case 5:
+                       printf("5 selected. \n");
+                       break;
+                       
+                   case 6:
+                       printf("6 selected. \n");
+                       break;
+                       
+                  case 7:
+                       printf("7 selected. \n");
+                       break;
+                       
+                       default:
                        printf("only use numbers between 1 and 7. \n");
                        break;
                }
