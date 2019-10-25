@@ -59,7 +59,7 @@ void showOperationsMenu() {
                        printf("7 selected. \n");
                        break;
                        
-                       default:
+                    default:
                        printf("only use numbers between 1 and 7. \n");
                        break;
                }
