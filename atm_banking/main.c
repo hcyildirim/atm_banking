@@ -10,6 +10,13 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include <string.h>
+
+struct customer {
+    int id;
+    char *name;
+    float balance;
+};
 
 void showOperationsMenu() {
     int selection;
@@ -86,6 +93,29 @@ void upsertDataFiles() {
             fclose(file);
         }
     }
+}
+
+void getUsers()
+{
+    FILE *fp = fopen("users.txt", "r");
+    int i = 0;
+    struct customer customers[50];
+    char line[255];
+
+    while (fgets(line, sizeof(line), fp) != NULL)
+    {
+        char *id = strtok(line, ",");
+        char *name = strtok(NULL, ",");
+        char *balance = strtok(NULL, ",\n");
+        
+        struct customer input = { atoi(id), name, atof(balance) };
+        
+        customers[i] = input;
+        
+        i++;
+    }
+    
+    fclose(fp);
 }
 
 int main(int argc, const char * argv[]){
