@@ -95,11 +95,11 @@ void upsertDataFiles() {
     }
 }
 
-void getUsers()
+struct customer *getUsers(int k)
 {
     FILE *fp = fopen("users.txt", "r");
     int i = 0;
-    struct customer customers[50];
+    struct customer *customers = (struct customer*)calloc(k, sizeof(struct customer));
     char line[255];
 
     while (fgets(line, sizeof(line), fp) != NULL)
@@ -116,11 +116,20 @@ void getUsers()
     }
     
     fclose(fp);
+        
+    return customers;
 }
 
 int main(int argc, const char * argv[]){
     upsertDataFiles();
-    getUsers();
+    
+    struct customer *customers = getUsers(2);
+    
+    for (int i = 0; i < 2; i++) {
+        printf("%s \n", customers[i].name);
+    }
+    
+    free(customers);
     
     char option, loweredOption;
     bool cardInserted = false;
