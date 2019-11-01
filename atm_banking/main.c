@@ -76,7 +76,7 @@ void showOperationsMenu() {
 void upsertDataFiles() {
     int numberOfFiles = 2;
     const char *files[numberOfFiles];
-    files[0] = "users.txt";
+    files[0] = "customers.txt";
     files[1] = "accounts.txt";
     
     for (int i = 0; i < numberOfFiles; i++) {
@@ -95,9 +95,9 @@ void upsertDataFiles() {
     }
 }
 
-struct customer *getUsers(int k)
+struct customer *getCustomers(int k)
 {
-    FILE *fp = fopen("users.txt", "r");
+    FILE *fp = fopen("customers.txt", "r");
     int i = 0;
     struct customer *customers = (struct customer*)calloc(k, sizeof(struct customer));
     char line[255];
@@ -123,7 +123,7 @@ struct customer *getUsers(int k)
 int main(int argc, const char * argv[]){
     upsertDataFiles();
     
-    struct customer *customers = getUsers(2);
+    struct customer *customers = getCustomers(2);
     
     for (int i = 0; i < 2; i++) {
         printf("%s \n", customers[i].name);
