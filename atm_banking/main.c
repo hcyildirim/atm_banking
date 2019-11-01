@@ -124,16 +124,27 @@ struct customer *getCustomers(int k)
     return customers;
 }
 
+int authenticate(struct customer *customers, int k, char *accountNumber, int pin) {
+    int result = 0;
+    
+    for(int i = 0; i < k; ++i)
+    {
+        if(strcmp(customers[i].accountNumber, accountNumber) == 0 && customers[i].pin == pin)
+        {
+            result = 1;
+            break;
+        }
+    }
+    
+    return result;
+}
+
 int main(int argc, const char * argv[]){
     upsertDataFiles();
     
     struct customer *customers = getCustomers(2);
     
-    for (int i = 0; i < 2; i++) {
-        printf("%s \n", customers[i].accountNumber);
-        printf("%s \n", customers[i].name);
-        printf("%i \n", customers[i].pin);
-    }
+    //    int result = authenticate(customers, 2, "0956", 1234);
     
     free(customers);
     
