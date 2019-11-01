@@ -14,8 +14,10 @@
 
 struct customer {
     int id;
+    char *accountNumber;
     char *name;
     float balance;
+    int pin;
 };
 
 void showOperationsMenu() {
@@ -105,10 +107,12 @@ struct customer *getCustomers(int k)
     while (fgets(line, sizeof(line), fp) != NULL)
     {
         char *id = strtok(line, ",");
+        char *accountNumber = strtok(NULL, ",");
         char *name = strtok(NULL, ",");
-        char *balance = strtok(NULL, ",\n");
+        char *balance = strtok(NULL, ",");
+        char *pin = strtok(NULL, ",\n");
         
-        struct customer input = { atoi(id), strdup(name), atof(balance) };
+        struct customer input = { atoi(id), strdup(accountNumber), strdup(name), atof(balance), atoi(pin) };
         
         customers[i] = input;
         
@@ -126,7 +130,9 @@ int main(int argc, const char * argv[]){
     struct customer *customers = getCustomers(2);
     
     for (int i = 0; i < 2; i++) {
+        printf("%s \n", customers[i].accountNumber);
         printf("%s \n", customers[i].name);
+        printf("%i \n", customers[i].pin);
     }
     
     free(customers);
