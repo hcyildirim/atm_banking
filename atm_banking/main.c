@@ -108,7 +108,7 @@ void getUsers()
         char *name = strtok(NULL, ",");
         char *balance = strtok(NULL, ",\n");
         
-        struct customer input = { atoi(id), name, atof(balance) };
+        struct customer input = { atoi(id), strdup(name), atof(balance) };
         
         customers[i] = input;
         
@@ -120,6 +120,7 @@ void getUsers()
 
 int main(int argc, const char * argv[]){
     upsertDataFiles();
+    getUsers();
     
     char option, loweredOption;
     bool cardInserted = false;
