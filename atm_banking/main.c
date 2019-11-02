@@ -12,6 +12,9 @@
 #include <stdbool.h>
 #include <string.h>
 
+#define CUSTOMERS_TXT "customers.txt"
+#define ACCOUNTS_TXT "accounts.txt"
+
 struct customer {
     int id;
     char *accountNumber;
@@ -78,8 +81,8 @@ void showOperationsMenu() {
 void upsertDataFiles() {
     int numberOfFiles = 2;
     const char *files[numberOfFiles];
-    files[0] = "customers.txt";
-    files[1] = "accounts.txt";
+    files[0] = CUSTOMERS_TXT;
+    files[1] = ACCOUNTS_TXT;
     
     for (int i = 0; i < numberOfFiles; i++) {
         FILE *file;
@@ -99,7 +102,7 @@ void upsertDataFiles() {
 
 struct customer *getCustomers(int k)
 {
-    FILE *fp = fopen("customers.txt", "r");
+    FILE *fp = fopen(CUSTOMERS_TXT, "r");
     int i = 0;
     struct customer *customers = (struct customer*)calloc(k, sizeof(struct customer));
     char line[255];
@@ -127,7 +130,7 @@ struct customer *getCustomers(int k)
 int authenticate(struct customer *customers, int k, char *accountNumber, int pin) {
     int result = 0;
     
-    for(int i = 0; i < k; ++i)
+    for(int i = 0; i < k; i++)
     {
         if(strcmp(customers[i].accountNumber, accountNumber) == 0 && customers[i].pin == pin)
         {
@@ -144,7 +147,7 @@ int main(int argc, const char * argv[]){
     
     struct customer *customers = getCustomers(2);
     
-    //    int result = authenticate(customers, 2, "0956", 1234);
+//    int result = authenticate(customers, 2, "0956", 1234);
     
     free(customers);
     
