@@ -14,6 +14,7 @@
 
 #define CUSTOMERS_TXT "customers.txt"
 #define ACCOUNTS_TXT "accounts.txt"
+#define TEMP_TXT "temp.txt"
 
 struct customer {
     int id;
@@ -100,6 +101,38 @@ void upsertDataFiles() {
     }
 }
 
+void updateCustomerData(struct customer *customers) {
+    FILE *file = fopen(CUSTOMERS_TXT, "r");
+    FILE *temp = fopen(TEMP_TXT, "w");
+    int lineCount = 0;
+    char line[255];
+    
+    if (file == NULL || temp == NULL)
+    {
+        printf("\nUnable to open file.\n");
+        exit(1);
+    }
+    
+    while (fgets(line, sizeof(line), file) != NULL)
+    {
+        lineCount++;
+    }
+    
+    for(int i = 0; i < lineCount; i++) {
+        fprintf(temp, "%i,%s,%s,%f,%d\n", customers[i].id, customers[i].accountNumber, customers[i].name, customers[i].balance, customers[i].pin);
+    }
+    
+    /* Close all files to release resource */
+    fclose(file);
+    fclose(temp);
+
+    /* Delete original source file */
+    remove(CUSTOMERS_TXT);
+
+    /* Rename temp file as original file */
+    rename(TEMP_TXT, CUSTOMERS_TXT);
+}
+
 struct customer *getCustomers(int k)
 {
     FILE *fp = fopen(CUSTOMERS_TXT, "r");
@@ -147,7 +180,9 @@ int main(int argc, const char * argv[]){
     
     struct customer *customers = getCustomers(2);
     
-//    int result = authenticate(customers, 2, "0956", 1234);
+    //    updateCustomerData(customers);
+    
+    //    int result = authenticate(customers, 2, "0956", 1234);
     
     free(customers);
     
