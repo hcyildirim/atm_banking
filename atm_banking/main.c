@@ -180,8 +180,16 @@ void showAccountInfo(struct customer *customer){
     printf("Your balance is: %f\n", customer->balance);
 }
 
-void deposit(struct customer *customer, float amount){
-    customer->balance = customer->balance + amount;
+void deposit(struct customer *customer, float amount) {
+    customer->balance += amount;
+}
+
+void withdrawal(struct customer *customer, float amount) {
+    if (customer->balance >= amount) {
+        customer->balance -= amount;
+    } else {
+        printf("Insufficient balance.Your balance is: %f", customer->balance);
+    }
 }
 
 void authorizeOperationsMenu() {
@@ -195,7 +203,6 @@ void authorizeOperationsMenu() {
     printf("Please enter your pin: ");
     scanf("%i",&pin);
     int result = authenticate(customers, 2, accountNumber, pin);
-    
     
     if (result == 1) {
         showOperationsMenu();
