@@ -175,6 +175,11 @@ int authenticate(struct customer *customers, int k, char *accountNumber, int pin
     return result;
 }
 
+void showAccountInfo(struct customer *customer){
+    printf("Your account number is: %s\n", customer->accountNumber);
+    printf("Your balance is: %f\n", customer->balance);
+}
+
 void authorizeOperationsMenu() {
     struct customer *customers = getCustomers(2);
 
@@ -271,7 +276,6 @@ int main(int argc, const char * argv[]){
      
         Kullanıcı 1. seçeneği seçerse;
             + Hesap numarası
-            + Şube bilgisi
             + Bakiyesi
      
         Kullanıcı 2. seçeneği seçerse;
