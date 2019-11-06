@@ -175,16 +175,36 @@ int authenticate(struct customer *customers, int k, char *accountNumber, int pin
     return result;
 }
 
+void authorizeOperationsMenu() {
+    struct customer *customers = getCustomers(2);
+
+    char accountNumber[255];
+    int pin;
+    
+    printf("Please enter your account number: ");
+    scanf("%s", accountNumber);
+    printf("Please enter your pin: ");
+    scanf("%i",&pin);
+    int result = authenticate(customers, 2, accountNumber, pin);
+    
+    
+    if (result == 1) {
+        showOperationsMenu();
+    } else {
+        printf("\nThis user is not exist");
+    }
+    
+    free(customers);
+}
+
 int main(int argc, const char * argv[]){
     upsertDataFiles();
     
-    struct customer *customers = getCustomers(2);
     
     //    updateCustomerData(customers);
     
     //    int result = authenticate(customers, 2, "0956", 1234);
     
-    free(customers);
     
     char option, loweredOption;
     bool cardInserted = false;
@@ -203,7 +223,7 @@ int main(int argc, const char * argv[]){
             case 'y':
                 cardInserted = true;
                 system("clear");
-                showOperationsMenu();
+                authorizeOperationsMenu();
                 break;
                  
             case 'n':
