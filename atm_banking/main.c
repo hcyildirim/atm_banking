@@ -180,6 +180,10 @@ void showAccountInfo(struct customer *customer){
     printf("Your balance is: %f\n", customer->balance);
 }
 
+void deposit(struct customer *customer, float amount){
+    customer->balance = customer->balance + amount;
+}
+
 void authorizeOperationsMenu() {
     struct customer *customers = getCustomers(2);
 
