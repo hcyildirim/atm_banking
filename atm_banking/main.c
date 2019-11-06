@@ -192,6 +192,14 @@ void withdrawal(struct customer *customer, float amount) {
     }
 }
 
+void changePin(struct customer *customer,int oldPin, int newPin){
+    if (customer->pin == oldPin) {
+        customer->pin = newPin;
+    } else {
+        printf("Wrong pin \n");
+    }
+}
+
 void authorizeOperationsMenu() {
     struct customer *customers = getCustomers(2);
 
@@ -294,7 +302,6 @@ int main(int argc, const char * argv[]){
             + Bu seçenek altında yapılan işlemler gösterilcek.
      
         Kullanıcı 3. seçeneği seçerse;
-            + Kullanıcıya hangi çeşit hesabına para yatırmak istediği sorulur. (Dolar, TL, Euro)
                 + Ne kadar miktar para yatıracağı sorulur.
                 + Dekont gösterilir.
                     + Hesap bilgileri gösterilir.
