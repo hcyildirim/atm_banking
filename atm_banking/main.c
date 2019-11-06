@@ -178,20 +178,20 @@ void updateCustomerData(struct customer *customers) {
     rename(TEMP_TXT, CUSTOMERS_TXT);
 }
 
-int authenticate(struct customer *head, char *accountNumber, int pin) {
-    int result = 0;
+struct customer *authenticate(struct customer *head, char *accountNumber, int pin) {
+    struct customer *customer = NULL;
     
     while (head != NULL) {
         if(strcmp(head->accountNumber, accountNumber) == 0 && head->pin == pin)
         {
-            result = 1;
+            customer = head;
             break;
         }
         
         head = head->next;
     }
     
-    return result;
+    return customer;
 }
 
 void showAccountInfo(struct customer *customer){
@@ -220,7 +220,7 @@ void changePin(struct customer *customer,int oldPin, int newPin){
 }
 
 void authorizeOperationsMenu() {
-    struct customer *head = getCustomers();
+    struct customer *customers = getCustomers();
     
     char accountNumber[255];
     int pin;
@@ -229,9 +229,9 @@ void authorizeOperationsMenu() {
     scanf("%s", accountNumber);
     printf("Please enter your pin: ");
     scanf("%i", &pin);
-    int result = authenticate(head, accountNumber, pin);
+    struct customer *customer = authenticate(customers, accountNumber, pin);
     
-    if (result == 1) {
+    if (customer != NULL) {
         showOperationsMenu();
     } else {
         printf("\nThis user is not exist.\n");
