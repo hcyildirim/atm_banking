@@ -235,7 +235,7 @@ void createTransaction(struct transaction **head_ref, struct customer *customer,
     
     last->next = transaction;
     
-    updateTransactionData(last);
+    updateTransactionData(*head_ref);
     
     return;
 }
@@ -252,7 +252,7 @@ void updateCustomerData(struct customer *head) {
     
     while (head != NULL)
     {
-        fprintf(temp, "%i,%s,%s,%f,%d\n",  head->id,  head->accountNumber,  head->name,  head->balance,  head->pin);
+        fprintf(temp, "%i,%s,%s,%f,%d\n", head->id, head->accountNumber, head->name, head->balance, head->pin);
         head = head->next;
     }
     
@@ -265,6 +265,40 @@ void updateCustomerData(struct customer *head) {
     
     /* Rename temp file as original file */
     rename(TEMP_TXT, CUSTOMERS_TXT);
+}
+
+void createCustomer(struct customer **head_ref, char *name, int pin) {
+    struct customer *last = *head_ref;
+    
+    char accountNumber[6];
+    sprintf(accountNumber, "%d", arc4random() % 9000 + 1000);
+
+    struct customer *customer = malloc(sizeof(struct customer));
+    customer->accountNumber = accountNumber;
+    customer->name = name;
+    customer->balance = 0;
+    customer->pin = pin;
+    customer->next = NULL;
+    
+    if (*head_ref == NULL)
+    {
+        *head_ref = customer;
+        customer->id = 1;
+        updateCustomerData(customer);
+        return;
+    }
+    
+    while (last->next != NULL){
+        last = last->next;
+    }
+    
+    customer->id = last->id + 1;
+    last->next = customer;
+    
+    updateCustomerData(*head_ref);
+    
+    return;
+
 }
 
 struct customer *authenticate(struct customer *head, char *accountNumber, int pin) {
@@ -331,6 +365,8 @@ void authorizeOperationsMenu() {
         //
         //            transactions = transactions->next;
         //        }
+        
+        //        createCustomer(&customers, "kasfkaksfaksf", 1234);
         
         showOperationsMenu();
     } else {
