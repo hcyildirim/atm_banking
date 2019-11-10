@@ -11,9 +11,10 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <string.h>
+#include <time.h>
 
 #define CUSTOMERS_TXT "customers.txt"
-#define ACCOUNTS_TXT "accounts.txt"
+#define TRANSACTIONS_TXT "transactions.txt"
 #define TEMP_TXT "temp.txt"
 
 struct customer {
@@ -24,6 +25,15 @@ struct customer {
     int pin;
     
     struct customer *next;
+};
+
+struct transaction {
+    char *accountNumber;
+    float amount;
+    int type; // 0 is withdrawal, 1 is deposit
+    char *createdAt;
+    
+    struct transaction *next;
 };
 
 void showOperationsMenu() {
@@ -85,7 +95,7 @@ void upsertDataFiles() {
     int numberOfFiles = 2;
     const char *files[numberOfFiles];
     files[0] = CUSTOMERS_TXT;
-    files[1] = ACCOUNTS_TXT;
+    files[1] = TRANSACTIONS_TXT;
     
     for (int i = 0; i < numberOfFiles; i++) {
         FILE *file;
@@ -138,24 +148,42 @@ struct customer *getCustomers()
     return head;
 }
 
-int getCustomerCount(struct customer *head)
+struct transaction *getTransactions()
 {
-    int count = 0;
-    struct customer *current = head;
+    FILE *fp = fopen(TRANSACTIONS_TXT, "r");
+    struct transaction *current, *head;
+    head = current = NULL;
+    char line[255];
     
-    while (current != NULL)
+    while (fgets(line, sizeof(line), fp) != NULL)
     {
-        count++;
-        current = current->next;
+        char *accountNumber = strtok(line, ",");
+        char *amount = strtok(NULL, ",");
+        char *type = strtok(NULL, ",");
+        char *createdAt = strtok(NULL, ",\n");
+        
+        struct transaction *transaction = malloc(sizeof(struct transaction));
+        transaction->accountNumber = strdup(accountNumber);
+        transaction->amount = atof(amount);
+        transaction->type = atoi(type);
+        transaction->createdAt = strdup(createdAt);
+        transaction->next = NULL;
+        
+        if(head == NULL){
+            current = head = transaction;
+        } else {
+            current = current->next = transaction;
+        }
     }
     
-    return count;
+    fclose(fp);
+    
+    return head;
 }
 
-void updateCustomerData(struct customer *customers) {
-    FILE *file = fopen(CUSTOMERS_TXT, "r");
+void updateTransactionData(struct transaction *head) {
+    FILE *file = fopen(TRANSACTIONS_TXT, "r");
     FILE *temp = fopen(TEMP_TXT, "w");
-    int customerCount = getCustomerCount(customers);
     
     if (file == NULL || temp == NULL)
     {
@@ -163,8 +191,69 @@ void updateCustomerData(struct customer *customers) {
         exit(1);
     }
     
-    for(int i = 0; i < customerCount; i++) {
-        fprintf(temp, "%i,%s,%s,%f,%d\n", customers[i].id, customers[i].accountNumber, customers[i].name, customers[i].balance, customers[i].pin);
+    while (head != NULL)
+    {
+        fprintf(temp, "%s,%f,%i,%s\n", head->accountNumber, head->amount,head->type, head->createdAt);
+        head = head->next;
+    }
+    
+    /* Close all files to release resource */
+    fclose(file);
+    fclose(temp);
+    
+    /* Delete original source file */
+    remove(TRANSACTIONS_TXT);
+    
+    /* Rename temp file as original file */
+    rename(TEMP_TXT, TRANSACTIONS_TXT);
+}
+
+void createTransaction(struct transaction **head_ref, struct customer *customer, float amount, int type) {
+    char createdAt[255];
+    time_t now = time(0);
+    strftime(createdAt, 255, "%Y-%m-%d %H:%M:%S", localtime(&now));
+    
+    struct transaction *last = *head_ref;
+    
+    struct transaction *transaction = malloc(sizeof(struct transaction));
+    transaction->accountNumber = customer->accountNumber;
+    transaction->amount = amount;
+    transaction->type = type;
+    transaction->createdAt = createdAt;
+    transaction->next = NULL;
+    
+    if (*head_ref == NULL)
+    {
+        *head_ref = transaction;
+        updateTransactionData(transaction);
+        return;
+    }
+    
+    while (last->next != NULL){
+        last = last->next;
+    }
+    
+    last->next = transaction;
+    
+    updateTransactionData(last);
+    
+    return;
+}
+
+void updateCustomerData(struct customer *head) {
+    FILE *file = fopen(CUSTOMERS_TXT, "r");
+    FILE *temp = fopen(TEMP_TXT, "w");
+    
+    if (file == NULL || temp == NULL)
+    {
+        printf("\nUnable to open file.\n");
+        exit(1);
+    }
+    
+    while (head != NULL)
+    {
+        fprintf(temp, "%i,%s,%s,%f,%d\n",  head->id,  head->accountNumber,  head->name,  head->balance,  head->pin);
+        head = head->next;
     }
     
     /* Close all files to release resource */
@@ -232,6 +321,17 @@ void authorizeOperationsMenu() {
     struct customer *customer = authenticate(customers, accountNumber, pin);
     
     if (customer != NULL) {
+        //        struct transaction *transactions = getTransactions();
+        //        createTransaction(&transactions, customers, 20, 1);
+        
+        //        while (transactions != NULL) {
+        //            if(strcmp(transactions->accountNumber, customer->accountNumber) == 0) {
+        //                printf("Your transaction");
+        //            }
+        //
+        //            transactions = transactions->next;
+        //        }
+        
         showOperationsMenu();
     } else {
         printf("\nThis user is not exist.\n");
