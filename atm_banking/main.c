@@ -246,7 +246,8 @@ void createCustomer(struct customer **head_ref, char *name, int pin) {
 
 }
 
-struct customer *authenticate(struct customer *head, char *accountNumber, int pin) {
+struct customer *authenticate(char *accountNumber, int pin) {
+    struct customer *head = getCustomers();
     struct customer *customer = NULL;
     
     while (head != NULL) {
@@ -284,7 +285,7 @@ void withdrawal(struct customer *customer, float amount) {
     if (customer->balance >= amount) {
         customer->balance -= amount;
     } else {
-        printf("Insufficient balance.Your balance is: %f", customer->balance);
+        printf("Insufficient balance. Your balance is: %f", customer->balance);
     }
 }
 
@@ -368,12 +369,10 @@ void showOperationsMenu(struct customer *currentUser) {
                 printf("Please enter an amount: ");
                 scanf("%f",&amount);
                 withdrawal(currentUser, amount);
-                
                 break;
                 
             case 7:
                 printf("7 selected. \n");
-             
                 break;
                 
             default:
@@ -384,31 +383,16 @@ void showOperationsMenu(struct customer *currentUser) {
 }
 
 void authorizeOperationsMenu() {
-    struct customer *customers = getCustomers();
-    
     char accountNumber[255];
     int pin;
-    
+        
     printf("Please enter your account number: ");
     scanf("%s", accountNumber);
     printf("Please enter your pin: ");
     scanf("%i", &pin);
-    struct customer *customer = authenticate(customers, accountNumber, pin);
+    struct customer *customer = authenticate(accountNumber, pin);
     
     if (customer != NULL) {
-        //        struct transaction *transactions = getTransactions();
-        //        createTransaction(&transactions, customers, 20, 1);
-        
-        //        while (transactions != NULL) {
-        //            if(strcmp(transactions->accountNumber, customer->accountNumber) == 0) {
-        //                printf("Your transaction");
-        //            }
-        //
-        //            transactions = transactions->next;
-        //        }
-        
-        //        createCustomer(&customers, "kasfkaksfaksf", 1234);
-        
         printf("\n----------------------------\nWelcome %s!\n----------------------------\n\n", customer->name);
         showOperationsMenu(customer);
     } else {
@@ -418,7 +402,6 @@ void authorizeOperationsMenu() {
 
 int main(int argc, const char * argv[]){
     upsertDataFiles();
-    
     authorizeOperationsMenu();
     
     /*
