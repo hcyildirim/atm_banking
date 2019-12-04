@@ -368,6 +368,7 @@ void authorizeOperationsMenu() {
         
         //        createCustomer(&customers, "kasfkaksfaksf", 1234);
         
+        printf("\n----------------------------\nWelcome %s!\n----------------------------\n\n", customer->name);
         showOperationsMenu();
     } else {
         printf("\nThis user is not exist.\n");
@@ -377,35 +378,7 @@ void authorizeOperationsMenu() {
 int main(int argc, const char * argv[]){
     upsertDataFiles();
     
-    char option, loweredOption;
-    bool cardInserted = false;
-    
-    do {
-        printf("Insert your card (y/n): \n");
-        
-        do {
-            scanf("%c", &option);
-        } while( option == '\n' );
-        
-        loweredOption = tolower(option);
-        
-        switch (loweredOption)
-        {
-            case 'y':
-                cardInserted = true;
-                system("clear");
-                authorizeOperationsMenu();
-                break;
-                
-            case 'n':
-                exit(0);
-                break;
-                
-            default:
-                printf("only use y and n chars. \n");
-                break;
-        }
-    } while (cardInserted != true);
+    authorizeOperationsMenu();
     
     /*
      authenticate olabilmek icin 1 fonksiyon'a ihtiyacımız var, 1 numaralı menu o işe yarıyor
