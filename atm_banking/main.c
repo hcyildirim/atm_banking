@@ -36,61 +36,6 @@ struct transaction {
     struct transaction *next;
 };
 
-void showOperationsMenu() {
-    int selection;
-    
-    do {
-        
-        printf("1- Account information\n");
-        printf("2- Transactions\n");
-        printf("3- Deposit\n");
-        printf("4- Pin change\n");
-        printf("5- Balance\n");
-        printf("6- Withdrawal\n");
-        printf("7- Bill payment\n");
-        
-        printf("Select an operation: ");
-        do {
-            scanf("%i", &selection);
-        } while( selection == '\n' );
-        
-        switch (selection)
-        {
-            case 1:
-                printf("1 selected. \n");
-                break;
-                
-            case 2:
-                printf("2 selected. \n");
-                break;
-                
-            case 3:
-                printf("3 selected. \n");
-                break;
-                
-            case 4:
-                printf("4 selected. \n");
-                break;
-                
-            case 5:
-                printf("5 selected. \n");
-                break;
-                
-            case 6:
-                printf("6 selected. \n");
-                break;
-                
-            case 7:
-                printf("7 selected. \n");
-                break;
-                
-            default:
-                printf("only use numbers between 1 and 7. \n");
-                break;
-        }
-    } while(selection >= 1 && selection <= 7);
-}
-
 void upsertDataFiles() {
     int numberOfFiles = 2;
     const char *files[numberOfFiles];
@@ -322,8 +267,17 @@ void showAccountInfo(struct customer *customer){
     printf("Your balance is: %f\n", customer->balance);
 }
 
+void showBalance(struct customer *customer){
+    printf("Your balance is: %f\n", customer->balance);
+}
+
 void deposit(struct customer *customer, float amount) {
-    customer->balance += amount;
+    if (amount > 0) {
+        customer->balance += amount;
+    }
+    else {
+        printf("Amount should more than 0\n");
+    }
 }
 
 void withdrawal(struct customer *customer, float amount) {
@@ -340,6 +294,72 @@ void changePin(struct customer *customer,int oldPin, int newPin){
     } else {
         printf("Wrong pin.\n");
     }
+}
+
+void showOperationsMenu(struct customer *currentUser) {
+    int selection;
+    float amount;
+    int oldPin, newPin;
+    
+    do {
+        
+        printf("1- Account information\n");
+        printf("2- Transactions\n");
+        printf("3- Deposit\n");
+        printf("4- Pin change\n");
+        printf("5- Balance\n");
+        printf("6- Withdrawal\n");
+        printf("7- Bill payment\n");
+        
+        printf("Select an operation: ");
+        do {
+            scanf("%i", &selection);
+        } while( selection == '\n' );
+        
+        switch (selection)
+        {
+            case 1:
+                showAccountInfo(currentUser);
+                break;
+                
+            case 2:
+                printf("2 selected. \n");
+                break;
+                
+            case 3:
+                printf("Enter the amount: ");
+                scanf("%f",&amount);
+                deposit(currentUser, amount);
+                break;
+                
+            case 4:
+                printf("Please enter your current pin: ");
+                scanf("%i", &oldPin);
+                printf("Please enter your new pin: ");
+                scanf("%i", &newPin);
+                changePin(currentUser, oldPin, newPin);
+                break;
+                
+            case 5:
+                showBalance(currentUser);
+                break;
+                
+            case 6:
+                printf("Please enter an amount: ");
+                scanf("%f",&amount);
+                withdrawal(currentUser, amount);
+                
+                break;
+                
+            case 7:
+                printf("7 selected. \n");
+                break;
+                
+            default:
+                printf("only use numbers between 1 and 7. \n");
+                break;
+        }
+    } while(selection >= 1 && selection <= 7);
 }
 
 void authorizeOperationsMenu() {
@@ -369,7 +389,7 @@ void authorizeOperationsMenu() {
         //        createCustomer(&customers, "kasfkaksfaksf", 1234);
         
         printf("\n----------------------------\nWelcome %s!\n----------------------------\n\n", customer->name);
-        showOperationsMenu();
+        showOperationsMenu(customer);
     } else {
         printf("\nThis user is not exist.\n");
     }
