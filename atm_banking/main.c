@@ -296,7 +296,7 @@ void changePin(struct customer *customer,int oldPin, int newPin){
     }
 }
 
-void showTransactionsByUser(struct customer *customer){
+void showTransactionsByCustomer(struct customer *customer){
     struct transaction *transactions = getTransactions();
     
     while (transactions != NULL) {
@@ -344,7 +344,7 @@ void showOperationsMenu(struct customer *currentUser) {
                 break;
                 
             case 2:
-                showTransactionsByUser(currentUser);
+                showTransactionsByCustomer(currentUser);
                 break;
                 
             case 3:
