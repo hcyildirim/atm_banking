@@ -297,24 +297,23 @@ void changePin(struct customer *customer,int oldPin, int newPin){
 }
 
 void showTransactionsByCustomer(struct customer *customer){
-    struct transaction *transactions = getTransactions();
+    struct transaction *head = getTransactions();
     
-    while (transactions != NULL) {
-        if (strcmp(transactions->accountNumber, customer->accountNumber) == 0) {
-            printf("Amount: %f ",transactions->amount);
-            if (transactions->type == 0) {
+    while (head != NULL) {
+        if (strcmp(head->accountNumber, customer->accountNumber) == 0) {
+            printf("Amount: %f ",head->amount);
+            if (head->type == 0) {
                 printf("Type: Withrawal ");
             }
             else{
                 printf("Type: Deposit ");
             }
-            printf("Date: %s",transactions->createdAt);
+            printf("Date: %s",head->createdAt);
         }
         printf("\n");
         
-        transactions = transactions->next;
+        head = head->next;
     }
-    
 }
 
 void showOperationsMenu(struct customer *currentUser) {
