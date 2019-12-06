@@ -20,6 +20,7 @@
 enum transactionTypes {
     Withdrawal = 0,
     Deposit = 1,
+    Transfer = 2,
 };
 
 struct customer {
@@ -265,11 +266,11 @@ struct customer *authenticate(char *accountNumber, int pin) {
 
 void showAccountInfo(struct customer *customer){
     printf("Your account number is: %s\n", customer->accountNumber);
-    printf("Your balance is: %f\n", customer->balance);
+    printf("Your balance is: %.2f\n", customer->balance);
 }
 
 void showBalance(struct customer *customer){
-    printf("Your balance is: %f\n", customer->balance);
+    printf("Your balance is: %.2f\n", customer->balance);
 }
 
 void deposit(struct customer *customer, float amount) {
@@ -291,7 +292,7 @@ void withdrawal(struct customer *customer, float amount) {
         createTransaction(customer, amount, Withdrawal);
         showBalance(customer);
     } else {
-        printf("Insufficient balance. Your balance is: %f", customer->balance);
+        printf("Insufficient balance. Your balance is: %.2f \n", customer->balance);
     }
 }
 
@@ -309,18 +310,42 @@ void showTransactionsByCustomer(struct customer *customer){
     
     while (head != NULL) {
         if (strcmp(head->accountNumber, customer->accountNumber) == 0) {
-            printf("Amount: %f ",head->amount);
+            printf("Amount: %.2f ",head->amount);
             if (head->type == Withdrawal) {
                 printf("Type: Withrawal ");
             }
-            else{
+            else if (head->type == Transfer){
+                printf("Type: Transfer ");
+            } else {
                 printf("Type: Deposit ");
             }
             printf("Date: %s",head->createdAt);
+            printf("\n");
         }
-        printf("\n");
         
         head = head->next;
+    }
+}
+
+void transfer(struct customer *from, struct customer *to, float amount) {
+    if (from->balance >= amount) {
+        // decrement user's balance who is sending the money.
+        from->balance -= amount;
+        updateCustomer(from);
+        createTransaction(from, amount, Transfer);
+        
+        // incerement user's balance who is receiving the money.
+        to->balance += amount;
+        updateCustomer(to);
+        createTransaction(to, amount, Deposit);
+        
+        // show info
+        printf("%.2f has been sent to %s successfully! \n", amount, to->name);
+        
+        // show user's balance who is sending the money after everything's done.
+        showBalance(from);
+    } else {
+        printf("Insufficient balance. Your balance is: %.2f \n", from->balance);
     }
 }
 
@@ -337,7 +362,7 @@ void showOperationsMenu(struct customer *currentUser) {
         printf("4- Pin change\n");
         printf("5- Balance\n");
         printf("6- Withdrawal\n");
-        printf("7- Bill payment\n");
+        printf("7- Transfer\n");
         
         printf("Select an operation: ");
         do {

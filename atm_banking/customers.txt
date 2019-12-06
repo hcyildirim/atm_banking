@@ -1,2 +1,2 @@
-1,0954,Huseyin Can Yildirim,45.000000,1234
-2,0955,Hatice Akyel,310.000000,2505
+1,0954,Huseyin Can Yildirim,35.000000,1234
+2,0955,Hatice Akyel,320.000000,2505
