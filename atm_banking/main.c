@@ -17,6 +17,11 @@
 #define TRANSACTIONS_TXT "transactions.txt"
 #define TEMP_TXT "temp.txt"
 
+enum transactionTypes {
+    Withdrawal = 0,
+    Deposit = 1,
+};
+
 struct customer {
     int id;
     char *accountNumber;
@@ -153,39 +158,26 @@ void updateTransactionData(struct transaction *head) {
     rename(TEMP_TXT, TRANSACTIONS_TXT);
 }
 
-void createTransaction(struct transaction **head_ref, struct customer *customer, float amount, int type) {
+void createTransaction(struct customer *customer, float amount, int type) {
+    FILE *file = fopen(TRANSACTIONS_TXT, "a");
+    
+    if (file == NULL) {
+        printf("\nUnable to open file.\n");
+        exit(1);
+    }
+    
     char createdAt[255];
     time_t now = time(0);
     strftime(createdAt, 255, "%Y-%m-%d %H:%M:%S", localtime(&now));
     
-    struct transaction *last = *head_ref;
+    fprintf(file, "%s,%f,%i,%s\n", customer->accountNumber, amount, type, createdAt);
     
-    struct transaction *transaction = malloc(sizeof(struct transaction));
-    transaction->accountNumber = customer->accountNumber;
-    transaction->amount = amount;
-    transaction->type = type;
-    transaction->createdAt = createdAt;
-    transaction->next = NULL;
-    
-    if (*head_ref == NULL)
-    {
-        *head_ref = transaction;
-        updateTransactionData(transaction);
-        return;
-    }
-    
-    while (last->next != NULL){
-        last = last->next;
-    }
-    
-    last->next = transaction;
-    
-    updateTransactionData(*head_ref);
+    fclose(file);
     
     return;
 }
 
-void updateCustomerData(struct customer *currentUser) {
+void updateCustomer(struct customer *currentUser) {
     FILE *file = fopen(CUSTOMERS_TXT, "r");
     FILE *temp = fopen(TEMP_TXT, "w");
     char line[1000];
@@ -238,7 +230,7 @@ void createCustomer(struct customer **head_ref, char *name, int pin) {
     {
         *head_ref = customer;
         customer->id = 1;
-        updateCustomerData(customer);
+        updateCustomer(customer);
         return;
     }
     
@@ -249,10 +241,9 @@ void createCustomer(struct customer **head_ref, char *name, int pin) {
     customer->id = last->id + 1;
     last->next = customer;
     
-    updateCustomerData(*head_ref);
+    updateCustomer(*head_ref);
     
     return;
-    
 }
 
 struct customer *authenticate(char *accountNumber, int pin) {
@@ -284,7 +275,8 @@ void showBalance(struct customer *customer){
 void deposit(struct customer *customer, float amount) {
     if (amount > 0) {
         customer->balance += amount;
-        updateCustomerData(customer);
+        updateCustomer(customer);
+        createTransaction(customer, amount, Deposit);
         showBalance(customer);
     }
     else {
@@ -295,7 +287,8 @@ void deposit(struct customer *customer, float amount) {
 void withdrawal(struct customer *customer, float amount) {
     if (customer->balance >= amount) {
         customer->balance -= amount;
-        updateCustomerData(customer);
+        updateCustomer(customer);
+        createTransaction(customer, amount, Withdrawal);
         showBalance(customer);
     } else {
         printf("Insufficient balance. Your balance is: %f", customer->balance);
@@ -305,7 +298,7 @@ void withdrawal(struct customer *customer, float amount) {
 void changePin(struct customer *customer,int oldPin, int newPin){
     if (customer->pin == oldPin) {
         customer->pin = newPin;
-        updateCustomerData(customer);
+        updateCustomer(customer);
     } else {
         printf("Wrong pin.\n");
     }
@@ -317,7 +310,7 @@ void showTransactionsByCustomer(struct customer *customer){
     while (head != NULL) {
         if (strcmp(head->accountNumber, customer->accountNumber) == 0) {
             printf("Amount: %f ",head->amount);
-            if (head->type == 0) {
+            if (head->type == Withdrawal) {
                 printf("Type: Withrawal ");
             }
             else{
