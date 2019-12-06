@@ -334,7 +334,7 @@ void transfer(struct customer *from, struct customer *to, float amount) {
         updateCustomer(from);
         createTransaction(from, amount, Transfer);
         
-        // incerement user's balance who is receiving the money.
+        // increment user's balance who is receiving the money.
         to->balance += amount;
         updateCustomer(to);
         createTransaction(to, amount, Deposit);
