@@ -285,6 +285,7 @@ void deposit(struct customer *customer, float amount) {
     if (amount > 0) {
         customer->balance += amount;
         updateCustomerData(customer);
+        showBalance(customer);
     }
     else {
         printf("Amount should more than 0\n");
@@ -295,6 +296,7 @@ void withdrawal(struct customer *customer, float amount) {
     if (customer->balance >= amount) {
         customer->balance -= amount;
         updateCustomerData(customer);
+        showBalance(customer);
     } else {
         printf("Insufficient balance. Your balance is: %f", customer->balance);
     }
