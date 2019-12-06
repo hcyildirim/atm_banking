@@ -284,6 +284,7 @@ void showBalance(struct customer *customer){
 void deposit(struct customer *customer, float amount) {
     if (amount > 0) {
         customer->balance += amount;
+        updateCustomerData(customer);
     }
     else {
         printf("Amount should more than 0\n");
@@ -302,6 +303,7 @@ void withdrawal(struct customer *customer, float amount) {
 void changePin(struct customer *customer,int oldPin, int newPin){
     if (customer->pin == oldPin) {
         customer->pin = newPin;
+        updateCustomerData(customer);
     } else {
         printf("Wrong pin.\n");
     }
