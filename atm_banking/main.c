@@ -185,9 +185,10 @@ void createTransaction(struct transaction **head_ref, struct customer *customer,
     return;
 }
 
-void updateCustomerData(struct customer *head) {
+void updateCustomerData(struct customer *currentUser) {
     FILE *file = fopen(CUSTOMERS_TXT, "r");
     FILE *temp = fopen(TEMP_TXT, "w");
+    char line[1000];
     
     if (file == NULL || temp == NULL)
     {
@@ -195,10 +196,18 @@ void updateCustomerData(struct customer *head) {
         exit(1);
     }
     
-    while (head != NULL)
-    {
-        fprintf(temp, "%i,%s,%s,%f,%d\n", head->id, head->accountNumber, head->name, head->balance, head->pin);
-        head = head->next;
+    while (fgets(line, sizeof(line), file) != NULL) {
+        int id = atoi(strtok(line, ","));
+        char *accountNumber = strtok(NULL, ",");
+        char *name = strtok(NULL, ",");
+        float balance = atof(strtok(NULL, ","));
+        int pin = atoi(strtok(NULL, ",\n"));
+        
+        if (id == currentUser->id) {
+            fprintf(temp, "%i,%s,%s,%f,%d\n", currentUser->id, currentUser->accountNumber, currentUser->name, currentUser->balance, currentUser->pin);
+        } else {
+            fprintf(temp, "%i,%s,%s,%f,%d\n", id, accountNumber, name, balance, pin);
+        }
     }
     
     /* Close all files to release resource */
@@ -284,6 +293,7 @@ void deposit(struct customer *customer, float amount) {
 void withdrawal(struct customer *customer, float amount) {
     if (customer->balance >= amount) {
         customer->balance -= amount;
+        updateCustomerData(customer);
     } else {
         printf("Insufficient balance. Your balance is: %f", customer->balance);
     }
