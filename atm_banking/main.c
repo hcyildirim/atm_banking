@@ -132,33 +132,6 @@ struct transaction *getTransactions()
     return head;
 }
 
-void updateTransactionData(struct transaction *head) {
-    FILE *file = fopen(TRANSACTIONS_TXT, "r");
-    FILE *temp = fopen(TEMP_TXT, "w");
-    
-    if (file == NULL || temp == NULL)
-    {
-        printf("\nUnable to open file.\n");
-        exit(1);
-    }
-    
-    while (head != NULL)
-    {
-        fprintf(temp, "%s,%f,%i,%s\n", head->accountNumber, head->amount,head->type, head->createdAt);
-        head = head->next;
-    }
-    
-    /* Close all files to release resource */
-    fclose(file);
-    fclose(temp);
-    
-    /* Delete original source file */
-    remove(TRANSACTIONS_TXT);
-    
-    /* Rename temp file as original file */
-    rename(TEMP_TXT, TRANSACTIONS_TXT);
-}
-
 void createTransaction(struct customer *customer, float amount, int type) {
     FILE *file = fopen(TRANSACTIONS_TXT, "a");
     
