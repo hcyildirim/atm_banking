@@ -226,7 +226,7 @@ void createCustomer(struct customer **head_ref, char *name, int pin) {
     
     char accountNumber[6];
     sprintf(accountNumber, "%d", arc4random() % 9000 + 1000);
-
+    
     struct customer *customer = malloc(sizeof(struct customer));
     customer->accountNumber = accountNumber;
     customer->name = name;
@@ -252,7 +252,7 @@ void createCustomer(struct customer **head_ref, char *name, int pin) {
     updateCustomerData(*head_ref);
     
     return;
-
+    
 }
 
 struct customer *authenticate(char *accountNumber, int pin) {
@@ -399,7 +399,7 @@ void showOperationsMenu(struct customer *currentUser) {
 void authorizeOperationsMenu() {
     char accountNumber[255];
     int pin;
-        
+    
     printf("Please enter your account number: ");
     scanf("%s", accountNumber);
     printf("Please enter your pin: ");
@@ -414,9 +414,26 @@ void authorizeOperationsMenu() {
     }
 }
 
+void welcomeMenu(){
+    int option;
+    printf("1- Sign in\n2- Sign up\n");
+    printf("Please select an option: ");
+    scanf("%d",&option);
+    switch (option) {
+        case 1:
+            authorizeOperationsMenu();
+            break;
+        case 2:
+            printf("Option 2 selected. ");
+        default:
+            break;
+    }
+}
+
 int main(int argc, const char * argv[]){
     upsertDataFiles();
-    authorizeOperationsMenu();
+    welcomeMenu();
+    
     
     /*
      authenticate olabilmek icin 1 fonksiyon'a ihtiyacımız var, 1 numaralı menu o işe yarıyor
