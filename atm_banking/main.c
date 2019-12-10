@@ -451,7 +451,8 @@ void welcomeMenu(){
     char temp;
     int pin;
     int pinConfirmation;
-    printf("1- Sign in\n2- Sign up\n");
+    printf("1- Sign in\n");
+    printf("2- Sign up\n");
     printf("Please select an option: ");
     scanf("%d",&option);
     switch (option) {
