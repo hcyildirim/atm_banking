@@ -24,7 +24,6 @@ enum transactionTypes {
 };
 
 struct customer {
-    int id;
     char *accountNumber;
     char *name;
     float balance;
@@ -73,14 +72,12 @@ struct customer *getCustomers()
     
     while (fgets(line, sizeof(line), fp) != NULL)
     {
-        char *id = strtok(line, ",");
-        char *accountNumber = strtok(NULL, ",");
+        char *accountNumber = strtok(line, ",");
         char *name = strtok(NULL, ",");
         char *balance = strtok(NULL, ",");
         char *pin = strtok(NULL, ",\n");
         
         struct customer *customer = malloc(sizeof(struct customer));
-        customer->id = atoi(id);
         customer->accountNumber = strdup(accountNumber);
         customer->name = strdup(name);
         customer->balance = atof(balance);
@@ -113,7 +110,7 @@ int createCustomer(char *name, int pin)
     int randomAccountNumber = arc4random() % 9000 + 1000;
     sprintf(accountNumber, "%d", randomAccountNumber);
     
-    fprintf(file, "%i,%s,%s,%f,%i\n", 1, accountNumber, name, 0.0, pin);
+    fprintf(file, "%s,%s,%f,%i\n", accountNumber, name, 0.0, pin);
     
     fclose(file);
     
@@ -184,16 +181,15 @@ void updateCustomer(struct customer *currentUser) {
     }
     
     while (fgets(line, sizeof(line), file) != NULL) {
-        int id = atoi(strtok(line, ","));
-        char *accountNumber = strtok(NULL, ",");
+        char *accountNumber = strtok(line, ",");
         char *name = strtok(NULL, ",");
         float balance = atof(strtok(NULL, ","));
         int pin = atoi(strtok(NULL, ",\n"));
         
-        if (id == currentUser->id) {
-            fprintf(temp, "%i,%s,%s,%f,%d\n", currentUser->id, currentUser->accountNumber, currentUser->name, currentUser->balance, currentUser->pin);
+        if (accountNumber == currentUser->accountNumber) {
+            fprintf(temp, "%s,%s,%f,%d\n", currentUser->accountNumber, currentUser->name, currentUser->balance, currentUser->pin);
         } else {
-            fprintf(temp, "%i,%s,%s,%f,%d\n", id, accountNumber, name, balance, pin);
+            fprintf(temp, "%s,%s,%f,%d\n", accountNumber, name, balance, pin);
         }
     }
     
@@ -405,7 +401,7 @@ void showOperationsMenu(struct customer *currentUser) {
 }
 
 void authorizeOperationsMenu() {
-    char accountNumber[255];
+    char accountNumber[6];
     int pin;
     
     printf("Please enter your account number: ");
@@ -425,6 +421,7 @@ void authorizeOperationsMenu() {
 void welcomeMenu(){
     int option;
     char name[1000];
+    char temp;
     int pin;
     int pinConfirmation;
     printf("1- Sign in\n2- Sign up\n");
@@ -436,7 +433,8 @@ void welcomeMenu(){
             break;
         case 2:
             printf("Name Surname: ");
-            scanf("%s", name);
+            scanf("%c", &temp); // temp statement to clear buffer
+            scanf("%[^\n]",name);
             printf("Pin: ");
             scanf("%i", &pin);
             printf("Please enter your pin again: ");
@@ -444,7 +442,7 @@ void welcomeMenu(){
             if (pin == pinConfirmation) {
                 int accountNumber = createCustomer(name, pin);
                 printf("Your account has been created successfully.\n");
-                printf("Your account number is: %i", accountNumber);
+                printf("Your account number is: %i \n", accountNumber);
                 authorizeOperationsMenu();
             }
             else{
