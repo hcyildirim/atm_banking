@@ -96,7 +96,28 @@ struct customer *getCustomers()
     
     fclose(fp);
     
+    
     return head;
+}
+
+int createCustomer(char *name, int pin)
+{
+    FILE *file = fopen(CUSTOMERS_TXT, "a");
+    
+    if (file == NULL) {
+        printf("\nUnable to open file.\n");
+        exit(1);
+    }
+    
+    char accountNumber[6];
+    int randomAccountNumber = arc4random() % 9000 + 1000;
+    sprintf(accountNumber, "%d", randomAccountNumber);
+    
+    fprintf(file, "%i,%s,%s,%f,%i\n", 1, accountNumber, name, 0.0, pin);
+    
+    fclose(file);
+    
+    return randomAccountNumber;
 }
 
 struct transaction *getTransactions()
@@ -185,39 +206,6 @@ void updateCustomer(struct customer *currentUser) {
     
     /* Rename temp file as original file */
     rename(TEMP_TXT, CUSTOMERS_TXT);
-}
-
-void createCustomer(struct customer **head_ref, char *name, int pin) {
-    struct customer *last = *head_ref;
-    
-    char accountNumber[6];
-    sprintf(accountNumber, "%d", arc4random() % 9000 + 1000);
-    
-    struct customer *customer = malloc(sizeof(struct customer));
-    customer->accountNumber = accountNumber;
-    customer->name = name;
-    customer->balance = 0;
-    customer->pin = pin;
-    customer->next = NULL;
-    
-    if (*head_ref == NULL)
-    {
-        *head_ref = customer;
-        customer->id = 1;
-        updateCustomer(customer);
-        return;
-    }
-    
-    while (last->next != NULL){
-        last = last->next;
-    }
-    
-    customer->id = last->id + 1;
-    last->next = customer;
-    
-    updateCustomer(*head_ref);
-    
-    return;
 }
 
 struct customer *authenticate(char *accountNumber, int pin) {
@@ -407,6 +395,9 @@ void authorizeOperationsMenu() {
 
 void welcomeMenu(){
     int option;
+    char name[1000];
+    int pin;
+    int pinConfirmation;
     printf("1- Sign in\n2- Sign up\n");
     printf("Please select an option: ");
     scanf("%d",&option);
@@ -415,7 +406,21 @@ void welcomeMenu(){
             authorizeOperationsMenu();
             break;
         case 2:
-            printf("Option 2 selected. ");
+            printf("Name Surname: ");
+            scanf("%s", name);
+            printf("Pin: ");
+            scanf("%i", &pin);
+            printf("Please enter your pin again: ");
+            scanf("%i", &pinConfirmation);
+            if (pin == pinConfirmation) {
+                int accountNumber = createCustomer(name, pin);
+                printf("Your account has been created successfully.\n");
+                printf("Your account number is: %i", accountNumber);
+                authorizeOperationsMenu();
+            }
+            else{
+                printf("Pins couldn't match!");
+            }
         default:
             break;
     }
