@@ -365,6 +365,7 @@ void showOperationsMenu(struct customer *currentUser) {
         printf("5- Balance\n");
         printf("6- Withdrawal\n");
         printf("7- Transfer\n");
+        printf("8- Exit\n");
         
         printf("Select an operation: ");
         do {
@@ -420,11 +421,16 @@ void showOperationsMenu(struct customer *currentUser) {
                 }
                 break;
                 
+            case 8:
+                printf("We'll miss you!\n");
+                exit(0);
+                break;
+
             default:
-                printf("only use numbers between 1 and 7. \n");
+                printf("Only use numbers between 1 and 8. \n");
                 break;
         }
-    } while(selection >= 1 && selection <= 7);
+    } while(selection >= 1 && selection <= 8);
 }
 
 void authorizeOperationsMenu() {
