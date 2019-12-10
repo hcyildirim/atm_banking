@@ -208,7 +208,7 @@ void updateCustomer(struct customer *currentUser) {
         float balance = atof(strtok(NULL, ","));
         int pin = atoi(strtok(NULL, ",\n"));
         
-        if (accountNumber == currentUser->accountNumber) {
+        if (strcmp(accountNumber, currentUser->accountNumber) == 0) {
             fprintf(temp, "%s,%s,%f,%d\n", currentUser->accountNumber, currentUser->name, currentUser->balance, currentUser->pin);
         } else {
             fprintf(temp, "%s,%s,%f,%d\n", accountNumber, name, balance, pin);
