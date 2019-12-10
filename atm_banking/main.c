@@ -68,7 +68,7 @@ struct customer *getCustomers()
     FILE *fp = fopen(CUSTOMERS_TXT, "r");
     struct customer *current, *head;
     head = current = NULL;
-    char line[255];
+    char line[1000];
     
     while (fgets(line, sizeof(line), fp) != NULL)
     {
@@ -144,7 +144,7 @@ struct transaction *getTransactions()
     FILE *fp = fopen(TRANSACTIONS_TXT, "r");
     struct transaction *current, *head;
     head = current = NULL;
-    char line[255];
+    char line[1000];
     
     while (fgets(line, sizeof(line), fp) != NULL)
     {
