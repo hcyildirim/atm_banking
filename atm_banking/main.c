@@ -208,6 +208,24 @@ void updateCustomer(struct customer *currentUser) {
     rename(TEMP_TXT, CUSTOMERS_TXT);
 }
 
+struct customer *findUserByAccountNumber(char *accountNumber) {
+    struct customer *head = getCustomers();
+    struct customer *customer = NULL;
+    
+    while (head != NULL) {
+        if(strcmp(head->accountNumber, accountNumber) == 0)
+        {
+            customer = head;
+            break;
+        }
+        
+        head = head->next;
+    }
+    
+    return customer;
+}
+
+
 struct customer *authenticate(char *accountNumber, int pin) {
     struct customer *head = getCustomers();
     struct customer *customer = NULL;
@@ -314,6 +332,7 @@ void showOperationsMenu(struct customer *currentUser) {
     int selection;
     float amount;
     int oldPin, newPin;
+    char accountNumber[6];
     
     do {
         
@@ -365,7 +384,17 @@ void showOperationsMenu(struct customer *currentUser) {
                 break;
                 
             case 7:
-                printf("7 selected. \n");
+                printf("Please enter the user's account number: ");
+                scanf("%s", accountNumber);
+                printf("Please enter the amount: ");
+                scanf("%f", &amount);
+                struct customer *to = findUserByAccountNumber(accountNumber);
+                if (to != NULL) {
+                    transfer(currentUser, to, amount);
+                }
+                else{
+                    printf("This user is not exist.");
+                }
                 break;
                 
             default:
