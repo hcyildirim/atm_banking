@@ -97,6 +97,28 @@ struct customer *getCustomers()
     return head;
 }
 
+bool checkIfAccountNumberExists(struct customer *head, int accountNumber)
+{
+    if (head == NULL)
+        return false;
+    
+    if (atoi(head->accountNumber) == accountNumber)
+        return true;
+    
+    return checkIfAccountNumberExists(head->next, accountNumber);
+}
+
+int getUniqueAccountNumber() {
+    int accountNumber = 0;
+    struct customer *head = getCustomers();
+    
+    do {
+        accountNumber = arc4random() % 9000 + 1000;
+    } while(checkIfAccountNumberExists(head, accountNumber));
+    
+    return accountNumber;
+}
+
 int createCustomer(char *name, int pin)
 {
     FILE *file = fopen(CUSTOMERS_TXT, "a");
@@ -107,14 +129,14 @@ int createCustomer(char *name, int pin)
     }
     
     char accountNumber[6];
-    int randomAccountNumber = arc4random() % 9000 + 1000;
-    sprintf(accountNumber, "%d", randomAccountNumber);
+    int uniqueAccountNumber = getUniqueAccountNumber();
+    sprintf(accountNumber, "%d", uniqueAccountNumber);
     
     fprintf(file, "%s,%s,%f,%i\n", accountNumber, name, 0.0, pin);
     
     fclose(file);
     
-    return randomAccountNumber;
+    return uniqueAccountNumber;
 }
 
 struct transaction *getTransactions()
@@ -303,24 +325,28 @@ void showTransactionsByCustomer(struct customer *customer){
 }
 
 void transfer(struct customer *from, struct customer *to, float amount) {
-    if (from->balance >= amount) {
-        // decrement user's balance who is sending the money.
-        from->balance -= amount;
-        updateCustomer(from);
-        createTransaction(from, amount, Transfer);
-        
-        // increment user's balance who is receiving the money.
-        to->balance += amount;
-        updateCustomer(to);
-        createTransaction(to, amount, Deposit);
-        
-        // show info
-        printf("%.2f has been sent to %s successfully! \n", amount, to->name);
-        
-        // show user's balance who is sending the money after everything's done.
-        showBalance(from);
+    if (strcmp(from->accountNumber, to->accountNumber) != 0) {
+        if (from->balance >= amount) {
+            // decrement user's balance who is sending the money.
+            from->balance -= amount;
+            updateCustomer(from);
+            createTransaction(from, amount, Transfer);
+            
+            // increment user's balance who is receiving the money.
+            to->balance += amount;
+            updateCustomer(to);
+            createTransaction(to, amount, Deposit);
+            
+            // show info
+            printf("%.2f has been sent to %s successfully! \n", amount, to->name);
+            
+            // show user's balance who is sending the money after everything's done.
+            showBalance(from);
+        } else {
+            printf("Insufficient balance. Your balance is: %.2f \n", from->balance);
+        }
     } else {
-        printf("Insufficient balance. Your balance is: %.2f \n", from->balance);
+        printf("You can't transfer money to yourself. \n");
     }
 }
 
@@ -382,14 +408,15 @@ void showOperationsMenu(struct customer *currentUser) {
             case 7:
                 printf("Please enter the user's account number: ");
                 scanf("%s", accountNumber);
-                printf("Please enter the amount: ");
-                scanf("%f", &amount);
                 struct customer *to = findUserByAccountNumber(accountNumber);
                 if (to != NULL) {
+                    printf("Please enter the amount: ");
+                    scanf("%f", &amount);
+                    
                     transfer(currentUser, to, amount);
                 }
                 else{
-                    printf("This user is not exist.");
+                    printf("This user is not exist.\n");
                 }
                 break;
                 
@@ -456,7 +483,6 @@ void welcomeMenu(){
 int main(int argc, const char * argv[]){
     upsertDataFiles();
     welcomeMenu();
-    
     
     /*
      authenticate olabilmek icin 1 fonksiyon'a ihtiyacımız var, 1 numaralı menu o işe yarıyor
