@@ -480,8 +480,9 @@ void welcomeMenu(){
                 authorizeOperationsMenu();
             }
             else{
-                printf("Pins couldn't match!");
+                printf("Pins don't match! \n");
             }
+            break;
         default:
             break;
     }
