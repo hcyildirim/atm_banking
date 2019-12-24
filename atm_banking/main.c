@@ -43,11 +43,12 @@ struct transaction {
 
 void upsertDataFiles() {
     int numberOfFiles = 2;
+    int i = 0;
     const char *files[numberOfFiles];
     files[0] = CUSTOMERS_TXT;
     files[1] = TRANSACTIONS_TXT;
     
-    for (int i = 0; i < numberOfFiles; i++) {
+    for (i = 0; i < numberOfFiles; i++) {
         FILE *file;
         if((file = fopen(files[i], "r")) != NULL)
         {
@@ -113,7 +114,7 @@ int getUniqueAccountNumber() {
     struct customer *head = getCustomers();
     
     do {
-        accountNumber = arc4random() % 9000 + 1000;
+        accountNumber = (rand()%9000) + 1000;
     } while(checkIfAccountNumberExists(head, accountNumber));
     
     return accountNumber;
@@ -489,6 +490,7 @@ void welcomeMenu(){
 }
 
 int main(int argc, const char * argv[]){
+    srand(time(NULL));
     upsertDataFiles();
     welcomeMenu();
     
